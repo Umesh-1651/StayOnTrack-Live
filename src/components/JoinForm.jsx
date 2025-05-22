@@ -12,7 +12,7 @@ import { Shuffle, Code, BookText, Zap, BookOpen, Heart, Sparkles, Lightbulb } fr
 // API URL - set to relative path for production deployment
 
 const API_URL = import.meta.env.BACKEND;
-
+console.log("API_URL:", API_URL);
 const JoinForm = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
