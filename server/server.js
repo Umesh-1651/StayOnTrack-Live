@@ -13,7 +13,7 @@ dotenv.config();
 // Set up Express app
 const app = express();
 const PORT = process.env.PORT || 5000;
-
+const API_URL = process.env.BACKEND;
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
@@ -25,12 +25,18 @@ mongoose.connect(process.env.MONGODB_URI)
   .catch(err => console.error('MongoDB connection error:', err));
 
 // Routes
-app.use('/api/users', userRoutes);
-app.use('/api/quotations', quotationRoutes);
+// Routes
+app.use(`${API_URL}/users`, userRoutes);
+app.use(`${API_URL}/quotations`, quotationRoutes);
 
 // Basic health check route
-app.get('/api/health', (req, res) => {
+app.get(`${API_URL}/health`, (req, res) => {
   res.status(200).json({ message: 'Server is running' });
+});
+
+// Root fallback (optional)
+app.get('/', (req, res) => {
+  res.send('Welcome to StayOnTrack API');
 });
 
 // Start server
