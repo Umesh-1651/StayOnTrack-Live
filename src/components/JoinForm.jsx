@@ -10,7 +10,8 @@ import TimeSelector from './TimeSelector';
 import { Shuffle, Code, BookText, Zap, BookOpen, Heart, Sparkles, Lightbulb } from 'lucide-react';
 
 // API URL - set to relative path for production deployment
-const API_URL = '/api';
+dotenv.config();
+const API_URL = process.env.BACKEND;
 
 const JoinForm = () => {
   const navigate = useNavigate();
