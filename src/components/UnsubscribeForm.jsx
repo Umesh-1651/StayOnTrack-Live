@@ -4,8 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/sonner";
 
-dotenv.config();
-const API_URL = process.env.BACKEND;
+const API_URL = import.meta.env.BACKEND;
 const UnsubscribeForm = () => {
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
