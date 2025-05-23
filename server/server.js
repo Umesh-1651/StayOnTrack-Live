@@ -6,7 +6,8 @@ const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const userRoutes = require('./routes/userRoutes');
 const quotationRoutes = require('./routes/quotationRoutes');
-
+//starting the scheduler to check any users having current time as their delivery time
+require('./scheduler');
 // Initialize environment variables
 dotenv.config();
 
