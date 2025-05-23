@@ -13,7 +13,7 @@ dotenv.config();
 // Set up Express app
 const app = express();
 const PORT = process.env.PORT || 5000;
-const API_URL = process.env.BACKEND;
+const API_URL = process.env.VITE_BACKEND;
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
