@@ -58,6 +58,55 @@ router.get('/by-email/:email', async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
+const otpStore = {}; // Simple in-memory store
+
+// 📩 Send OTP to user
+router.post('/send-otp', async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    otpStore[email] = otp;
+
+    await sendEmail(
+      email,
+      'Your StayOnTrack OTP',
+      `Hi ${user.name},\n\nYour OTP is: ${otp}\n\nThis is valid for 5 minutes.\n\n-StayOnTrack`
+    );
+
+    res.status(200).json({ message: 'OTP sent successfully' });
+  } catch (err) {
+    console.error('Error sending OTP:', err);
+    res.status(500).json({ message: 'Failed to send OTP' });
+  }
+});
+
+// ✅ Verify OTP and delete user
+router.post('/verify-unsubscribe', async (req, res) => {
+  const { email, otp } = req.body;
+
+  if (!otpStore[email] || otpStore[email] !== otp) {
+    return res.status(400).json({ message: 'Invalid or expired OTP' });
+  }
+
+  try {
+    const deleted = await User.findOneAndDelete({ email });
+    if (!deleted) {
+      return res.status(404).json({ message: 'User not found or already deleted' });
+    }
+
+    delete otpStore[email];
+    res.status(200).json({ message: 'User unsubscribed and deleted successfully' });
+  } catch (err) {
+    console.error('Error during unsubscription:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+module.exports = router;
 
 // Unsubscribe (deactivate) a user
 router.post('/unsubscribe', async (req, res) => {
