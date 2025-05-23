@@ -1,13 +1,13 @@
 const cron = require('node-cron');
-const moment = require('moment');
+const moment = require('moment-timezone');
 const User = require('./models/User');
 const Quotation = require('./models/Quotation');
 const { sendEmail } = require('./utils/emailService');
 
 // Schedule task to run every minute
 cron.schedule('* * * * *', async () => {
-  const now = moment().format('HH:mm');
-  console.log('⏰ Scheduler tick:', now);
+  const istNow = moment().tz("Asia/Kolkata").format('HH:mm');
+  console.log('⏰ Scheduler tick (IST):', istNow);
 
   try {
     const users = await User.find({ isActive: true });
@@ -15,12 +15,11 @@ cron.schedule('* * * * *', async () => {
     for (const user of users) {
       const userTime24 = moment(user.deliveryTime, ["h:mm A"]).format('HH:mm');
 
-      if (userTime24 === now) {
+      if (userTime24 === istNow) {
         const selectedGenre = user.isRandomGenre
           ? getRandomGenre()
           : user.quoteGenre;
 
-        // Fetch one random quote from DB
         const quote = await Quotation.aggregate([
           { $match: { genre: selectedGenre } },
           { $sample: { size: 1 } }
@@ -36,7 +35,7 @@ cron.schedule('* * * * *', async () => {
           message
         );
 
-        console.log(`✅ Email sent to ${user.email} at ${now}`);
+        console.log(`✅ Email sent to ${user.email} at ${istNow}`);
       }
     }
   } catch (err) {
