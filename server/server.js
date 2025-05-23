@@ -26,11 +26,11 @@ mongoose.connect(process.env.MONGODB_URI)
 
 // Routes
 // Routes
-app.use(`${API_URL}/users`, userRoutes);
-app.use(`${API_URL}/quotations`, quotationRoutes);
+app.use('/users', userRoutes);
+app.use('/quotations', quotationRoutes);
 
 // Basic health check route
-app.get(`${API_URL}/health`, (req, res) => {
+app.get('/health', (req, res) => {
   res.status(200).json({ message: 'Server is running' });
 });
 
